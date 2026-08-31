@@ -50,12 +50,12 @@ export default function Home() {
 
       <section className="hero page-width">
         <div className="hero-copy">
-          <div className="eyebrow"><Sparkles size={15} /> A better way to find your fit</div>
-          <h1>Where great teachers meet <em>the right schools.</em></h1>
-          <p className="hero-lede">BULBENI brings educators and schools together around what matters most—shared values, meaningful work, and classrooms where everyone can thrive.</p>
+          <div className="eyebrow"><Sparkles size={15} /> {t("A better way to find your fit")}</div>
+          <h1>{t("Where great teachers meet")} <em>{t("the right schools.")}</em></h1>
+          <p className="hero-lede">{t("BULBENI brings educators and schools together around what matters most—shared values, meaningful work, and classrooms where everyone can thrive.")}</p>
           <div className="hero-proof">
             <span className="avatar-stack" aria-hidden="true"><i>AM</i><i>JL</i><i>SK</i></span>
-            <span><strong>Built for real connection</strong><br />Not just another job board</span>
+            <span><strong>{t("Built for real connection")}</strong><br />{t("Not just another job board")}</span>
           </div>
         </div>
 
@@ -76,16 +76,16 @@ export default function Home() {
 
       <section className="path-section page-width" id="how-it-works">
         <div className="section-heading">
-          <div><span className="kicker">Start your journey</span><h2>Choose your path</h2></div>
-          <p>Whether you’re shaping young minds or building a remarkable team, your next chapter starts here.</p>
+          <div><span className="kicker">{t("Start your journey")}</span><h2>{t("Choose your path")}</h2></div>
+          <p>{t("Whether you’re shaping young minds or building a remarkable team, your next chapter starts here.")}</p>
         </div>
         <div className="path-grid">
           {paths.map(({ href, icon: Icon, eyebrow, title, copy, cta, className }) => (
             <Link href={href} className={className} key={href}>
               <span className="path-icon"><Icon size={26} /></span>
-              <span className="path-eyebrow">{eyebrow}</span>
-              <h3>{title}</h3><p>{copy}</p>
-              <span className="path-cta">{cta} <ArrowRight size={18} /></span>
+              <span className="path-eyebrow">{t(eyebrow)}</span>
+              <h3>{t(title)}</h3><p>{t(copy)}</p>
+              <span className="path-cta">{t(cta)} <ArrowRight size={18} /></span>
             </Link>
           ))}
         </div>
