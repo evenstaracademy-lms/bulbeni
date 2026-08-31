@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ArrowRight,
@@ -10,6 +12,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { Brand } from "@/components/brand";
+import { useI18n } from "@/components/i18n";
 
 const paths = [
   {
@@ -33,15 +36,16 @@ const paths = [
 ];
 
 export default function Home() {
+  const {language,setLanguage,t}=useI18n();
   return (
     <main className="landing-page">
       <header className="landing-nav page-width">
         <Brand />
         <nav aria-label="Main navigation" className="landing-links">
-          <a href="#how-it-works">How it works</a>
-          <a href="#why-bulbeni">Why Bulbeni</a>
+          <a href="#how-it-works">{t("How it works")}</a>
+          <a href="#why-bulbeni">{t("Why Bulbeni")}</a>
         </nav>
-        <Link className="nav-cta" href="#how-it-works">Find your fit <ArrowRight size={16} /></Link>
+        <div className="landing-nav-actions"><div className="language-switcher" aria-label={t("Language")}><button className={language==="en"?"active":""} onClick={()=>setLanguage("en")} aria-pressed={language==="en"}>EN</button><button className={language==="tr"?"active":""} onClick={()=>setLanguage("tr")} aria-pressed={language==="tr"}>TR</button></div><Link className="nav-cta" href="#how-it-works">{t("Find your fit")} <ArrowRight size={16} /></Link></div>
       </header>
 
       <section className="hero page-width">
