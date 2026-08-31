@@ -4,6 +4,7 @@ import "./globals.css";
 import "./teacher-reference.css";
 import "./school-dashboard.css";
 import "./teacher-detail.css";
+import "./credit-flow.css";
 import { ToastProvider } from "@/components/toast";
 import { TeacherProfileProvider } from "@/components/teacher-profile-store";
 

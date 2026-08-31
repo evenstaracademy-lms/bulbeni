@@ -82,8 +82,9 @@ The current prototype:
 - Calculates interactive completion and checklist state from that profile state.
 - Includes profile editing, photo preview, progress animation, and toast feedback.
 - Stores small profile images as data URLs and certificate evidence as file metadata only.
-- Does not yet use Supabase outside the school-side teacher directory, production file storage, authentication, payments, or real verification.
+- Does not yet use Supabase outside the school-side teacher directory and school-facing teacher profiles, production file storage, authentication, payments, or real verification.
 - Includes a visual school dashboard prototype, but not a functional school directory workflow.
+- Demonstrates a local-only school credit purchase and teacher connection-request flow without payments or backend persistence.
 
 ### Current prototype priority
 

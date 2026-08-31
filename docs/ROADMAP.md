@@ -52,6 +52,7 @@ This is a living checklist. Mark an item complete only when it works in the repo
 - [ ] Persisted saved teachers
 - [x] Full teacher profile from school context
 - [x] Locked-contact UI with locally persisted mock unlock
+- [x] Mock school credit packages and connection-request flow
 - [x] Mobile-responsive dashboard styling
 
 ## File uploads
@@ -125,6 +126,7 @@ This is a living checklist. Mark an item complete only when it works in the repo
 ## Supabase / backend
 
 - [x] Read the school-side teacher directory from Supabase
+- [x] Read school-facing teacher profiles from Supabase
 - [ ] Create Supabase project
 - [ ] Database schema
 - [ ] Teacher tables
