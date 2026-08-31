@@ -8,6 +8,7 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { schoolNav } from "@/components/school-nav";
 import { useToast } from "@/components/toast";
 import { getSupabaseClient } from "@/lib/supabase";
+import { readTeacherIds, SAVED_TEACHERS_KEY, toggleTeacherId } from "@/components/school-teacher-state";
 
 type Teacher={id:string;name:string;subject:string;city:string;match:number;years:number;languages:string;ages:string;certificate:string;tone:string;imageUrl:string};
 type TeacherRow={id:unknown;full_name:unknown;subject:unknown;city:unknown;years_experience:unknown;languages:unknown;age_groups:unknown;certificates:unknown;match_percentage:unknown;profile_image_url:unknown};
@@ -25,12 +26,13 @@ const advancedGroups=[
 export default function DiscoverTeachers(){
   const [teachers,setTeachers]=useState<Teacher[]>([]);const [loading,setLoading]=useState(true);const [error,setError]=useState("");
   const [drawer,setDrawer]=useState(false);const [tab,setTab]=useState("All Teachers");const [search,setSearch]=useState("");const [favorites,setFavorites]=useState<string[]>([]);const [advanced,setAdvanced]=useState<Record<string,string>>({});const {showToast}=useToast();
+  useEffect(()=>{setFavorites(readTeacherIds(SAVED_TEACHERS_KEY))},[]);
   useEffect(()=>{let active=true;(async()=>{try{const {data,error:queryError}=await getSupabaseClient().from("teachers").select("*");if(queryError)throw queryError;if(active)setTeachers(((data??[]) as TeacherRow[]).map(mapTeacher));}catch(cause){if(active)setError(cause instanceof Error?cause.message:"Unable to load teachers.");}finally{if(active)setLoading(false);}})();return()=>{active=false};},[]);
   const activeCount=Object.values(advanced).filter(v=>v&&v!=="Any").length;
   const recommended=useMemo(()=>[...teachers].sort((a,b)=>b.match-a.match).slice(0,3),[teachers]);
   const recommendedIds=useMemo(()=>new Set(recommended.map(teacher=>teacher.id)),[recommended]);
   const results=useMemo(()=>teachers.filter(t=>(tab!=="Saved Teachers"||favorites.includes(t.id))&&(tab!=="Recommended"||recommendedIds.has(t.id))&&`${t.name} ${t.subject}`.toLowerCase().includes(search.toLowerCase())),[tab,favorites,recommendedIds,search,teachers]);
-  const favorite=(id:string)=>setFavorites(current=>current.includes(id)?current.filter(x=>x!==id):[...current,id]);
+  const favorite=(id:string)=>setFavorites(toggleTeacherId(SAVED_TEACHERS_KEY,id));
   return <DashboardShell nav={schoolNav} role="School" initials="AC" hideBottomSettings>
     <header className="discover-heading"><h1>Discover Teachers</h1><p>Browse matching teachers and save your favourites.</p></header>
     <section className="recommendation-layout"><div className="recommendation-carousel"><div className="discover-section-title"><Sparkles/><h2>Recommended for You</h2></div><button className="carousel-arrow left" aria-label="Previous recommendations"><ArrowLeft/></button><div className="recommended-row">{recommended.map((teacher,index)=><TeacherCard key={teacher.id} teacher={teacher} compact favorite={favorites.includes(teacher.id)} onFavorite={()=>favorite(teacher.id)} imageIndex={index}/>)}</div><button className="carousel-arrow right" aria-label="Next recommendations"><ArrowRight/></button><div className="carousel-dots"><i className="active"/><i/><i/></div></div><aside className="recommendation-reason"><span><Target/></span><h2>Why these teachers?</h2><p>We match teachers based on your school profile, student age groups, languages of instruction, subject compatibility, and teacher profile quality to ensure the best fit.</p><Image src="/stationary-cup.png" width={95} height={80} alt=""/></aside></section>

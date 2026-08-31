@@ -84,7 +84,19 @@ The current prototype:
 - Stores small profile images as data URLs and certificate evidence as file metadata only.
 - Does not yet use Supabase outside the school-side teacher directory and school-facing teacher profiles, production file storage, authentication, payments, or real verification.
 - Includes a visual school dashboard prototype, but not a functional school directory workflow.
-- Demonstrates a local-only school credit purchase and teacher connection-request flow without payments or backend persistence.
+- Shows a mock school credit balance and a `Buy Credits` action that opens a presentation-only credit-package modal.
+- Teacher profiles include a `Request to Connect` action and confirmation modal explaining that the request will use one credit.
+- Demonstrates request, pending, approved, and contact-unlocked UI states, including the intended post-approval visibility of contact details and documents.
+- Keeps the credit and connection flow local/mock only. There is no payment provider, credit ledger, approval system, backend credit deduction, or production persistence.
+- Includes working Saved Teachers and Unlocked Contacts routes. Their ID state remains local/mock while teacher card data is loaded from Supabase.
+- Contains a Supabase-backed school dashboard integration for the selected demo school; the live school query requires read permission on the `schools` table.
+
+### Current demo identities
+
+- Demo school: **Marmara International College**
+- Demo teacher: **Nilaa Salarzaei**
+
+These identities are currently selected from Supabase data for demonstration purposes. They are not authenticated users and are not yet resolved through user-to-profile mapping. Real authentication, roles, and account/profile association remain future work.
 
 ### Current prototype priority
 

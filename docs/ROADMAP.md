@@ -49,11 +49,21 @@ This is a living checklist. Mark an item complete only when it works in the repo
 - [x] Advanced filtering prototype UI
 - [x] Visual teacher recommendations
 - [x] Placeholder match percentages
-- [ ] Persisted saved teachers
+- [x] Locally persisted saved-teacher directory prototype
 - [x] Full teacher profile from school context
 - [x] Locked-contact UI with locally persisted mock unlock
-- [x] Mock school credit packages and connection-request flow
+- [x] Mock school credit-balance display
+- [x] Presentation-only `Buy Credits` package modal
+- [x] Presentation-only `Request to Connect` confirmation modal with one-credit explanation
+- [x] Mock request, pending, approved, and contact-unlocked UI states
+- [x] Unlocked-contacts directory backed by local prototype request state
 - [x] Mobile-responsive dashboard styling
+
+### Current prototype demo identities
+
+- Demo school: **Marmara International College**
+- Demo teacher: **Nilaa Salarzaei**
+- Both identities are selected from Supabase data for the current demo until authentication and user-to-profile mapping are implemented.
 
 ## File uploads
 
@@ -127,6 +137,7 @@ This is a living checklist. Mark an item complete only when it works in the repo
 
 - [x] Read the school-side teacher directory from Supabase
 - [x] Read school-facing teacher profiles from Supabase
+- [ ] Read the school dashboard identity/profile from Supabase (implemented; blocked until `schools` grants anonymous read access)
 - [ ] Create Supabase project
 - [ ] Database schema
 - [ ] Teacher tables
@@ -221,7 +232,7 @@ This is a living checklist. Mark an item complete only when it works in the repo
 
 ## Contact unlocking / payment
 
-Payment is not part of the current prototype.
+The current credit balance, package selection, connection request, pending state, approval state, and contact unlock are presentation-only UI. Payment is not part of the current prototype. There is no real payment provider, credit ledger, approval system, or backend credit deduction.
 
 - [ ] Define contact-unlock business rule
 - [ ] Define what payment unlocks
