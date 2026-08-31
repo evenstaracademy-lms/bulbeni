@@ -6,13 +6,15 @@ import Link from "next/link";
 import { BookOpen, Building2, CalendarDays, Check, ExternalLink, GraduationCap, Languages, MapPin, Pencil, School, ShieldCheck, Sparkles, UsersRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/dashboard-shell";
-import { defaultSchoolProfile, SCHOOL_PROFILE_STORAGE, splitSchoolValues, type SchoolProfile } from "@/components/school-profile-data";
+import { defaultSchoolProfile, splitSchoolValues, type SchoolProfile } from "@/components/school-profile-data";
 import { schoolNav } from "@/components/school-nav";
+import { loadDemoSchoolProfile } from "@/components/school-supabase-profile";
 
 export default function SchoolProfileView(){
-  const [profile,setProfile]=useState<SchoolProfile>(defaultSchoolProfile);
-  useEffect(()=>{const timer=window.setTimeout(()=>{try{const saved=localStorage.getItem(SCHOOL_PROFILE_STORAGE);if(saved)setProfile({...defaultSchoolProfile,...JSON.parse(saved)})}catch{}},0);return()=>clearTimeout(timer)},[]);
-  return <DashboardShell nav={schoolNav} role="School" initials="AC" hideBottomSettings>
+  const [profile,setProfile]=useState<SchoolProfile>(defaultSchoolProfile);const [loading,setLoading]=useState(true);const [error,setError]=useState("");
+  useEffect(()=>{let active=true;(async()=>{try{const next=await loadDemoSchoolProfile();if(active)setProfile(next);}catch(cause){if(active)setError(cause instanceof Error?cause.message:"Unable to load school profile.");}finally{if(active)setLoading(false)}})();return()=>{active=false}},[]);
+  return <DashboardShell nav={schoolNav} role="School" initials="MI" hideBottomSettings>
+    {(loading||error)&&<div className={error?"school-data-error":"school-profile-loading"}>{loading?"Loading school profile from Supabase...":`Unable to load Supabase profile: ${error}`}</div>}
     <section className="school-profile-banner school-public-banner"><div className="school-logo-preview">{profile.logo?<img src={profile.logo} alt={`${profile.name} logo`}/>:<Building2/>}</div><div className="school-banner-copy"><span className="school-kicker">School profile</span><h1>{profile.name}</h1><p><MapPin/> {profile.city} <i/> <School/> {profile.type}</p><div>{splitSchoolValues(profile.ages).map(x=><span key={x}>{x}</span>)}{splitSchoolValues(profile.languages).map(x=><span key={x}>{x}</span>)}</div></div><Image src="/school-building.png" width={280} height={190} alt="" priority/><Link href="/school/profile" className="school-view-public"><Pencil/> Edit Profile</Link></section>
 
     <div className="school-public-grid">
@@ -25,7 +27,7 @@ export default function SchoolProfileView(){
       <aside className="school-public-side">
         <PublicCard icon={School} title="School at a Glance"><dl className="glance-list"><div><dt><Building2/>Campuses</dt><dd>{profile.campuses}</dd></div><div><dt><UsersRound/>Students</dt><dd>Approximately {profile.students}</dd></div><div><dt><CalendarDays/>Years operating</dt><dd>{profile.years} years</dd></div><div><dt><MapPin/>Location</dt><dd>{profile.city}</dd></div></dl></PublicCard>
         <PublicCard icon={Languages} title="Learning Community"><p className="side-intro">A multilingual environment supporting learners across:</p><div className="public-side-tags">{splitSchoolValues(profile.languages).map(x=><span key={x}>{x}</span>)}</div></PublicCard>
-        <section className="school-interest-card"><span><UsersRound/></span><h2>Interested in this school?</h2><p>Keep your teacher profile current so ABC College can understand your experience and teaching preferences.</p><Link href="/teacher/profile">View your teacher profile</Link></section>
+        <section className="school-interest-card"><span><UsersRound/></span><h2>Interested in this school?</h2><p>Keep your teacher profile current so {profile.name} can understand your experience and teaching preferences.</p><Link href="/teacher/profile">View your teacher profile</Link></section>
       </aside>
     </div>
   </DashboardShell>

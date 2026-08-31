@@ -9,15 +9,17 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { schoolNav } from "@/components/school-nav";
 import { useToast } from "@/components/toast";
 import { defaultSchoolProfile as defaults, SCHOOL_PROFILE_STORAGE as STORAGE, splitSchoolValues as split } from "@/components/school-profile-data";
+import { loadDemoSchoolProfile, saveDemoSchoolProfile } from "@/components/school-supabase-profile";
 
 
 export default function EditSchoolProfile(){
-  const [form,setForm]=useState(defaults);const {showToast}=useToast();
-  useEffect(()=>{const timer=window.setTimeout(()=>{try{const saved=localStorage.getItem(STORAGE);if(saved)setForm({...defaults,...JSON.parse(saved)})}catch{}},0);return()=>clearTimeout(timer)},[]);
+  const [form,setForm]=useState(defaults);const [loading,setLoading]=useState(true);const [loadError,setLoadError]=useState("");const {showToast}=useToast();
+  useEffect(()=>{let active=true;(async()=>{try{const profile=await loadDemoSchoolProfile();if(active)setForm(profile);}catch(cause){if(active){setLoadError(cause instanceof Error?cause.message:"Unable to load school profile.");try{const saved=localStorage.getItem(STORAGE);if(saved)setForm({...defaults,...JSON.parse(saved)})}catch{}}}finally{if(active)setLoading(false)}})();return()=>{active=false}},[]);
   const set=(key:string,value:string)=>setForm(current=>({...current,[key]:value}));
-  const save=()=>{localStorage.setItem(STORAGE,JSON.stringify(form));showToast("School profile updated successfully.")};
+  const save=async()=>{try{const saved=await saveDemoSchoolProfile(form);setForm(current=>({...current,...saved}));localStorage.setItem(STORAGE,JSON.stringify({...form,...saved}));showToast("School profile updated in Supabase successfully.")}catch(cause){showToast(`Unable to update school profile: ${cause instanceof Error?cause.message:"Unknown error"}`)}};
   const logo=(file?:File)=>{if(!file)return;if(file.size>450000){showToast("Please choose a logo under 450 KB for this demo.");return}const reader=new FileReader();reader.onload=()=>{const next={...form,logo:String(reader.result)};setForm(next);localStorage.setItem(STORAGE,JSON.stringify(next));showToast("School logo updated successfully.")};reader.readAsDataURL(file)};
-  return <DashboardShell nav={schoolNav} role="School" initials="AC" hideBottomSettings>
+  return <DashboardShell nav={schoolNav} role="School" initials="MI" hideBottomSettings>
+    {(loading||loadError)&&<div className={loadError?"school-data-error":"school-profile-loading"}>{loading?"Loading school profile from Supabase...":`Unable to load Supabase profile: ${loadError}`}</div>}
     <section className="school-profile-banner school-edit-banner"><div className="school-logo-preview">{form.logo?<img src={form.logo} alt={`${form.name} logo`}/>:<Building2/>}</div><div className="school-banner-copy"><span className="school-kicker">Edit school profile</span><h1>{form.name||"School name"}</h1><p><MapPin/> {form.city||"Location"} <i/> <School/> {form.type||"School type"}</p><div>{split(form.ages).map(x=><span key={x}>{x}</span>)}{split(form.languages).map(x=><span key={x}>{x}</span>)}</div><Link href="/school/profile/view" className="school-view-public"><Eye/> View Public Profile</Link></div><Image src="/school-building.png" width={280} height={190} alt="" priority/></section>
     <div className="school-edit-layout"><aside className="school-edit-index"><span>Profile sections</span><a href="#logo">School logo</a><a href="#basic">Basic information</a><a href="#education">Students & education</a><a href="#details">School details</a><a href="#support">Teacher support</a><a href="#facilities">Facilities & highlights</a><a href="#contact">Contact information</a></aside>
       <form className="school-profile-form" onSubmit={e=>{e.preventDefault();save()}}>

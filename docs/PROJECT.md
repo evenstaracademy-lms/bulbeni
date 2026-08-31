@@ -89,7 +89,7 @@ The current prototype:
 - Demonstrates request, pending, approved, and contact-unlocked UI states, including the intended post-approval visibility of contact details and documents.
 - Keeps the credit and connection flow local/mock only. There is no payment provider, credit ledger, approval system, backend credit deduction, or production persistence.
 - Includes working Saved Teachers and Unlocked Contacts routes. Their ID state remains local/mock while teacher card data is loaded from Supabase.
-- Contains a Supabase-backed school dashboard integration for the selected demo school; the live school query requires read permission on the `schools` table.
+- Loads the selected demo school dashboard, profile editor, and public school profile from the Supabase `schools` table. The editor is wired to write supported fields back to the same demo row, but saving requires an update grant/policy for the current anonymous prototype role; fields absent from the current schema remain prototype-only.
 
 ### Current demo identities
 

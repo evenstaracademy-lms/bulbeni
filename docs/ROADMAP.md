@@ -137,7 +137,8 @@ This is a living checklist. Mark an item complete only when it works in the repo
 
 - [x] Read the school-side teacher directory from Supabase
 - [x] Read school-facing teacher profiles from Supabase
-- [ ] Read the school dashboard identity/profile from Supabase (implemented; blocked until `schools` grants anonymous read access)
+- [x] Read the selected school dashboard identity/profile from Supabase
+- [ ] Update supported selected-school profile fields in Supabase (implemented; blocked until the prototype role has update permission)
 - [ ] Create Supabase project
 - [ ] Database schema
 - [ ] Teacher tables
