@@ -1,20 +1,18 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { loadDemoTeacherProfile, saveDemoTeacherProfile } from "@/components/teacher-supabase-profile";
 
 export type TeacherProfile = Record<string, string>;
 
 export const initialTeacherProfile: TeacherProfile = {
   profilePhoto: "",
-  firstName: "Maya", lastName: "Anderson", subject: "Primary Years Educator", location: "Bucharest, Romania",
-  about: "I’m an inquiry-led primary educator who believes curiosity, kindness, and meaningful challenge belong at the heart of every classroom.",
-  experience: "Grade 4 Homeroom Teacher — Northbridge International School (2022–Present)",
-  education: "MA in Education — University College London, 2019", certificates: "Qualified Teacher Status (QTS)",
-  certificateIssuer: "Department for Education, UK", certificateDate: "2023-06", certificateNumber: "QTS-48291", certificateEvidence: "",
-  subjects: "Primary curriculum, English, Mathematics, Science, Humanities", ages: "Ages 6–11",
-  languages: "English — Native; Romanian — Conversational; French — Basic", schoolTypes: "International school, IB World School",
-  video: "", cv: "Maya_Anderson_CV.pdf", availability: "September 2026", employment: "Currently employed",
-  relocation: "Open to relocate within Europe", workPermit: "EU citizen",
+  firstName: "Nilaa", lastName: "Salarzaei", subject: "English Teacher", location: "Istanbul",
+  about: "", experience: "10 years of teaching experience", education: "BA in English Language Teaching", certificates: "CELTA",
+  certificateIssuer: "", certificateDate: "", certificateNumber: "", certificateEvidence: "", subjects: "English Teacher", ages: "Adults|High School|University",
+  languages: "English - C2; Persian - Native; Turkish - B2", schoolTypes: "Language School|Private School|Adult Education",
+  video: "", cv: "CV available", availability: "Weekdays; Evenings", employment: "Full-time|Part-time",
+  relocation: "Not open to relocate", workPermit: "Available", yearsExperience:"10", nationality:"Iranian", teachingMode:"In-person|Online", age:"34",
 };
 
 export const completionSections = [
@@ -38,20 +36,21 @@ export function getProfileCompletion(profile: TeacherProfile) {
   return completionSections.reduce((total, section) => total + (isSectionComplete(profile, section.key) ? section.weight : 0), 0);
 }
 
-type Store = { profile: TeacherProfile; completion: number; hydrated: boolean; saveProfile: (profile: TeacherProfile) => void; resetProfile: () => void };
+type Store = { profile: TeacherProfile; completion: number; hydrated: boolean; loadError:string; saveProfile: (profile: TeacherProfile) => void; persistProfile:(profile:TeacherProfile)=>Promise<TeacherProfile>; resetProfile: () => void };
 const ProfileContext = createContext<Store | null>(null);
 const STORAGE_KEY = "bulbeni.teacher-profile.v1";
 
 export function TeacherProfileProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<TeacherProfile>(initialTeacherProfile);
   const [hydrated, setHydrated] = useState(false);
+  const [loadError,setLoadError]=useState("");
   useEffect(() => {
-    const timer=window.setTimeout(()=>{try { const saved = localStorage.getItem(STORAGE_KEY); if (saved) setProfile({ ...initialTeacherProfile, ...JSON.parse(saved) }); } catch { /* use demo defaults */ } setHydrated(true)},0);
-    return ()=>window.clearTimeout(timer);
+    let active=true;(async()=>{try{const live=await loadDemoTeacherProfile();if(active)setProfile(live)}catch(cause){if(active){setLoadError(cause instanceof Error?cause.message:"Unable to load teacher profile.");try{const saved=localStorage.getItem(STORAGE_KEY);if(saved)setProfile({...initialTeacherProfile,...JSON.parse(saved)})}catch{}}}finally{if(active)setHydrated(true)}})();return()=>{active=false};
   }, []);
   const saveProfile = useCallback((next: TeacherProfile) => { setProfile(next); localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); }, []);
+  const persistProfile=useCallback(async(next:TeacherProfile)=>{const saved=await saveDemoTeacherProfile(next);setProfile(current=>({...current,...saved}));localStorage.setItem(STORAGE_KEY,JSON.stringify({...next,...saved}));return saved},[]);
   const resetProfile = useCallback(() => { setProfile(initialTeacherProfile); localStorage.removeItem(STORAGE_KEY); }, []);
-  const value = useMemo(() => ({ profile, completion: getProfileCompletion(profile), hydrated, saveProfile, resetProfile }), [profile, hydrated, saveProfile, resetProfile]);
+  const value = useMemo(() => ({ profile, completion: getProfileCompletion(profile), hydrated, loadError, saveProfile, persistProfile, resetProfile }), [profile, hydrated,loadError,saveProfile,persistProfile,resetProfile]);
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
 }
 

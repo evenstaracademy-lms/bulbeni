@@ -18,7 +18,7 @@ function Field({ label, value, onChange, placeholder, textarea=false }: { label:
 }
 
 export default function EditTeacherProfile() {
-  const { profile, saveProfile, hydrated }=useTeacherProfile();
+  const { profile, saveProfile, persistProfile, hydrated, loadError }=useTeacherProfile();
   const [form,setForm]=useState<TeacherProfile>(initialTeacherProfile); const {showToast}=useToast();
   const loaded=useRef(false);
   const saveBaseline=useRef<TeacherProfile>(initialTeacherProfile);
@@ -29,8 +29,9 @@ export default function EditTeacherProfile() {
   const addEvidence=(file?:File)=>{if(!file)return;const next={...form,certificateEvidence:`${file.name}|${file.type}|${file.size}`};setForm(next);showToast(isSectionComplete(next,"certificates")?`Certificate evidence added — your profile is now ${getProfileCompletion(next)}% complete.`:"Evidence attached. Add the required certificate details to earn completion credit.")};
   const completed=useMemo(()=>completionSections.filter(section=>isSectionComplete(form,section.key)).length,[form]);
   const percentage=useMemo(()=>getProfileCompletion(form),[form]);
-  const save=()=>{const added=completionSections.filter(s=>!isSectionComplete(saveBaseline.current,s.key)&&isSectionComplete(form,s.key));let message=`Profile updated successfully — Your profile is now ${percentage}% complete.`;if(added.some(s=>s.key==="video"))message="Great! Adding an introduction video makes your profile stand out.";else if(added.some(s=>s.key==="experience"))message=`Teaching experience added — your profile is now ${percentage}% complete.`;else if(added.some(s=>s.key==="certificates"))message="Certificate added successfully.";saveBaseline.current=form;saveProfile(form);showToast(message)};
-  return <DashboardShell nav={teacherNav} role="Teacher" initials="MA" hideBottomSettings>
+  const save=async()=>{const added=completionSections.filter(s=>!isSectionComplete(saveBaseline.current,s.key)&&isSectionComplete(form,s.key));let message=`Profile updated successfully — Your profile is now ${percentage}% complete.`;if(added.some(s=>s.key==="video"))message="Great! Adding an introduction video makes your profile stand out.";else if(added.some(s=>s.key==="experience"))message=`Teaching experience added — your profile is now ${percentage}% complete.`;else if(added.some(s=>s.key==="certificates"))message="Certificate added successfully.";try{await persistProfile(form);saveBaseline.current=form;showToast(message)}catch(cause){showToast(`Unable to update Supabase profile: ${cause instanceof Error?cause.message:"Unknown error"}`)}};
+  return <DashboardShell nav={teacherNav} role="Teacher" initials="NS" hideBottomSettings>
+    {loadError&&<div className="school-data-error">Unable to load Supabase profile: {loadError}</div>}
     <div className="edit-header"><div><Link href="/teacher/profile" className="back-link"><ArrowLeft/> Back to profile</Link><h1>Edit your profile</h1><p>Tell schools what makes you a remarkable educator.</p></div><div className="edit-progress"><div><span>Profile completion</span><strong>{percentage}%</strong></div><i><b style={{width:`${percentage}%`}}/></i><small>{completed} of {sectionLinks.length} sections complete</small></div></div>
     <div className="edit-layout">
       <aside className="edit-nav panel"><span className="panel-kicker">Profile sections</span>{sectionLinks.map(([key,label,Icon])=>{const done=isSectionComplete(form,key);return <a href={`#${key}`} key={key} className={done?"complete":""}><Icon size={16}/><span>{label}</span>{done?<Check/>:<ChevronRight/>}</a>})}</aside>

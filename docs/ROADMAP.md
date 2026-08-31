@@ -33,7 +33,7 @@ This is a living checklist. Mark an item complete only when it works in the repo
 - [x] Certificate evidence document selection
 - [x] Introduction-video URL section
 - [ ] Introduction video file upload/playback
-- [ ] Teacher school directory
+- [x] Supabase-backed teacher school directory
 - [ ] Functional View profile as school mode (current button shows a toast)
 - [x] Mobile responsiveness
 
@@ -139,6 +139,8 @@ This is a living checklist. Mark an item complete only when it works in the repo
 - [x] Read school-facing teacher profiles from Supabase
 - [x] Read the selected school dashboard identity/profile from Supabase
 - [ ] Update supported selected-school profile fields in Supabase (implemented; blocked until the prototype role has update permission)
+- [x] Read the selected teacher dashboard/profile identity from Supabase
+- [ ] Update supported selected-teacher profile fields in Supabase (implemented; blocked until the prototype role has update permission)
 - [ ] Create Supabase project
 - [ ] Database schema
 - [ ] Teacher tables
