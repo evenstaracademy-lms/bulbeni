@@ -77,12 +77,12 @@ BULBENI does not currently verify certificates. A future human/admin workflow ma
 
 The current prototype:
 
-- Uses local/mock teacher data and seeded defaults.
+- Uses live Supabase data for the school-side teacher directory; other prototype areas still use local/mock data and seeded defaults.
 - Persists teacher profile state in browser `localStorage`.
 - Calculates interactive completion and checklist state from that profile state.
 - Includes profile editing, photo preview, progress animation, and toast feedback.
 - Stores small profile images as data URLs and certificate evidence as file metadata only.
-- Does not use Supabase, production file storage, authentication, payments, or real verification.
+- Does not yet use Supabase outside the school-side teacher directory, production file storage, authentication, payments, or real verification.
 - Includes a visual school dashboard prototype, but not a functional school directory workflow.
 
 ### Current prototype priority

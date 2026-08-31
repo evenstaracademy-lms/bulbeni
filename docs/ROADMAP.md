@@ -124,6 +124,7 @@ This is a living checklist. Mark an item complete only when it works in the repo
 
 ## Supabase / backend
 
+- [x] Read the school-side teacher directory from Supabase
 - [ ] Create Supabase project
 - [ ] Database schema
 - [ ] Teacher tables
