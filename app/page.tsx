@@ -41,7 +41,7 @@ export default function Home() {
           <a href="#how-it-works">How it works</a>
           <a href="#why-bulbeni">Why Bulbeni</a>
         </nav>
-        <Link className="nav-cta" href="/teacher">Find your fit <ArrowRight size={16} /></Link>
+        <Link className="nav-cta" href="#how-it-works">Find your fit <ArrowRight size={16} /></Link>
       </header>
 
       <section className="hero page-width">

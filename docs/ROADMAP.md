@@ -44,11 +44,11 @@ This is a living checklist. Mark an item complete only when it works in the repo
 - [x] Public school profile view route
 - [x] Teacher directory route
 - [x] Teacher recommendation cards on dashboard
-- [ ] Functional search (current UI is present only)
-- [ ] Functional basic filtering
+- [x] Functional teacher search across name, subject, city, nationality, languages, and certificates
+- [x] Functional basic teacher filters using Supabase-loaded records
 - [x] Advanced filtering prototype UI
 - [x] Visual teacher recommendations
-- [x] Placeholder match percentages
+- [x] Calculated Phase 1 rule-based recommendation percentages
 - [x] Locally persisted saved-teacher directory prototype
 - [x] Full teacher profile from school context
 - [x] Locked-contact UI with locally persisted mock unlock
@@ -168,17 +168,17 @@ This is a living checklist. Mark an item complete only when it works in the repo
 
 - [ ] Define compatibility fields
 - [ ] Define configurable weighting rules
-- [ ] Subject matching
-- [ ] Age-group matching
-- [ ] School-type matching
-- [ ] Language matching
+- [x] Subject matching prototype
+- [x] Age-group matching prototype
+- [x] School-type matching prototype
+- [x] Language matching prototype
 - [ ] Certificate matching
-- [ ] Experience weighting
-- [ ] Location matching
+- [x] Experience weighting prototype
+- [x] Location matching prototype
 - [ ] Relocation compatibility
-- [ ] Work-permit compatibility
+- [x] Work-permit compatibility prototype
 - [ ] Profile-completion effect on matching
-- [ ] Explain why a teacher was recommended
+- [x] Data-supported prototype recommendation reasons
 - [ ] Tune recommendation weights
 - [ ] Test recommendation edge cases
 
@@ -198,20 +198,20 @@ This is a living checklist. Mark an item complete only when it works in the repo
 
 ## Search & filtering
 
-- [ ] Search by name
-- [ ] Location
-- [ ] Subject
-- [ ] Experience
-- [ ] Age groups
-- [ ] Languages
-- [ ] Certificates
-- [ ] School-type experience
-- [ ] Availability
-- [ ] Relocation
-- [ ] Work permit
+- [x] Search by name
+- [x] Location
+- [x] Subject
+- [x] Experience
+- [x] Age groups
+- [x] Languages
+- [x] Certificates
+- [x] School-type experience
+- [x] Availability
+- [x] Relocation
+- [x] Work permit
 - [ ] Verified credentials
-- [ ] Reset filters
-- [ ] Empty results
+- [x] Reset filters
+- [x] Empty results
 - [ ] Pagination or infinite scroll
 - [ ] Sorting
 - [ ] Filter persistence

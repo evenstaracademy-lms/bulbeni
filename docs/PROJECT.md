@@ -89,6 +89,8 @@ The current prototype:
 - Demonstrates request, pending, approved, and contact-unlocked UI states, including the intended post-approval visibility of contact details and documents.
 - Keeps the credit and connection flow local/mock only. There is no payment provider, credit ledger, approval system, backend credit deduction, or production persistence.
 - Includes working Saved Teachers and Unlocked Contacts routes. Their ID state remains local/mock while teacher card data is loaded from Supabase.
+- Provides functional school-side teacher search plus basic and advanced filtering over the Supabase-loaded teacher dataset. Filters for schema-absent fields such as gender and profile completion remain disabled.
+- Ranks teacher recommendations with a transparent Phase 1 compatibility score derived from Marmara International College and teacher profile fields; no AI or external recommendation service is used.
 - Loads the selected demo school dashboard, profile editor, and public school profile from the Supabase `schools` table. The editor is wired to write supported fields back to the same demo row, but saving requires an update grant/policy for the current anonymous prototype role; fields absent from the current schema remain prototype-only.
 - Loads Nilaa Salarzaei as the selected teacher identity across the teacher header, dashboard, profile, and editor from the Supabase `teachers` table.
 - Includes a teacher-side Schools directory backed by live Supabase `schools` records.
