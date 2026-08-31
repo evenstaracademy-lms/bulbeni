@@ -3,11 +3,12 @@ import Link from "next/link";
 import { Award, BookOpen, Briefcase, Check, Clock3, Download, FileText, GraduationCap, Languages, MapPin, Play, SlidersHorizontal, UserRound, UsersRound, Video } from "lucide-react";
 import type { TeacherProfile } from "@/components/teacher-profile-store";
 import { ToastButton } from "@/components/toast-button";
+import { useI18n } from "@/components/i18n";
 
 const subjects = ["English Language", "English Literature", "Exam Preparation (IELTS, YDS, TOEFL)", "Academic Writing", "Conversation & Fluency"];
 
 function Card({ className, icon: Icon, title, children }: { className:string; icon:React.ComponentType<{size?:number}>; title:string; children:React.ReactNode }) {
-  return <section className={`reference-card ${className}`}><header><Icon/><h2>{title}</h2></header>{children}</section>;
+  const {t}=useI18n();return <section className={`reference-card ${className}`}><header><Icon/><h2>{t(title)}</h2></header>{children}</section>;
 }
 
 export function TeacherProfileGrid({ profile }: { profile:TeacherProfile }) {
@@ -26,5 +27,5 @@ export function TeacherProfileGrid({ profile }: { profile:TeacherProfile }) {
   </div>;
 }
 
-function Fact({icon:Icon,label,value}:{icon:React.ComponentType<{size?:number}>;label:string;value:string}) { return <div><span><Icon/></span><p><strong>{label}</strong><small>{value}</small></p></div> }
+function Fact({icon:Icon,label,value}:{icon:React.ComponentType<{size?:number}>;label:string;value:string}) { const {t}=useI18n();return <div><span><Icon/></span><p><strong>{t(label)}</strong><small>{value}</small></p></div> }
 function Document({name,tone}:{name:string;tone:string}) { return <div className="document-row"><span className={tone}><FileText/><b>PDF</b></span><p><strong>{name}</strong><small>Uploaded · 24 Apr 2024</small></p><ToastButton label={`Download ${name}`} message="Document download will be available later."><Download/></ToastButton></div> }

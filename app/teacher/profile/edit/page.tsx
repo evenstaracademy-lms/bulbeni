@@ -8,18 +8,20 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { teacherNav } from "@/components/teacher-nav";
 import { useToast } from "@/components/toast";
 import { completionSections, getProfileCompletion, initialTeacherProfile, isSectionComplete, TeacherProfile, useTeacherProfile } from "@/components/teacher-profile-store";
+import { useI18n } from "@/components/i18n";
 
 const sectionLinks = [
   ["profilePhoto","Profile photo",UserRound],["basic","Basic information",UserRound],["about","About me",BookOpen],["experience","Teaching experience",Briefcase],["education","Education",GraduationCap],["certificates","Certificates",Award],["subjects","Subjects",BookOpen],["ages","Student age groups",UsersRound],["languages","Languages",Languages],["schoolTypes","Previous school types",School],["workPreferences","Work preferences",CalendarDays],["cv","CV and documents",FileText],["video","Introduction video",Video],
 ] as const;
 
 function Field({ label, value, onChange, placeholder, textarea=false }: { label:string; value:string; onChange:(value:string)=>void; placeholder?:string; textarea?:boolean }) {
-  return <label className="form-field"><span>{label}</span>{textarea ? <textarea value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder} rows={5}/> : <input value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder}/>}</label>;
+  const {t}=useI18n();return <label className="form-field"><span>{t(label)}</span>{textarea ? <textarea value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder?t(placeholder):undefined} rows={5}/> : <input value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder?t(placeholder):undefined}/>}</label>;
 }
 
 export default function EditTeacherProfile() {
   const { profile, saveProfile, persistProfile, hydrated, loadError }=useTeacherProfile();
   const [form,setForm]=useState<TeacherProfile>(initialTeacherProfile); const {showToast}=useToast();
+  const {t}=useI18n();
   const loaded=useRef(false);
   const saveBaseline=useRef<TeacherProfile>(initialTeacherProfile);
   useEffect(()=>{if(hydrated&&!loaded.current){setForm(profile);saveBaseline.current=profile;loaded.current=true}},[hydrated,profile]);
@@ -32,9 +34,9 @@ export default function EditTeacherProfile() {
   const save=async()=>{const added=completionSections.filter(s=>!isSectionComplete(saveBaseline.current,s.key)&&isSectionComplete(form,s.key));let message=`Profile updated successfully — Your profile is now ${percentage}% complete.`;if(added.some(s=>s.key==="video"))message="Great! Adding an introduction video makes your profile stand out.";else if(added.some(s=>s.key==="experience"))message=`Teaching experience added — your profile is now ${percentage}% complete.`;else if(added.some(s=>s.key==="certificates"))message="Certificate added successfully.";try{await persistProfile(form);saveBaseline.current=form;showToast(message)}catch(cause){showToast(`Unable to update Supabase profile: ${cause instanceof Error?cause.message:"Unknown error"}`)}};
   return <DashboardShell nav={teacherNav} role="Teacher" initials="NS" hideBottomSettings>
     {loadError&&<div className="school-data-error">Unable to load Supabase profile: {loadError}</div>}
-    <div className="edit-header"><div><Link href="/teacher/profile" className="back-link"><ArrowLeft/> Back to profile</Link><h1>Edit your profile</h1><p>Tell schools what makes you a remarkable educator.</p></div><div className="edit-progress"><div><span>Profile completion</span><strong>{percentage}%</strong></div><i><b style={{width:`${percentage}%`}}/></i><small>{completed} of {sectionLinks.length} sections complete</small></div></div>
+    <div className="edit-header"><div><Link href="/teacher/profile" className="back-link"><ArrowLeft/> {t("Back to profile")}</Link><h1>{t("Edit your profile")}</h1><p>{t("Tell schools what makes you a remarkable educator.")}</p></div><div className="edit-progress"><div><span>{t("Profile Completion")}</span><strong>{percentage}%</strong></div><i><b style={{width:`${percentage}%`}}/></i><small>{completed} / {sectionLinks.length}</small></div></div>
     <div className="edit-layout">
-      <aside className="edit-nav panel"><span className="panel-kicker">Profile sections</span>{sectionLinks.map(([key,label,Icon])=>{const done=isSectionComplete(form,key);return <a href={`#${key}`} key={key} className={done?"complete":""}><Icon size={16}/><span>{label}</span>{done?<Check/>:<ChevronRight/>}</a>})}</aside>
+      <aside className="edit-nav panel"><span className="panel-kicker">{t("Profile sections")}</span>{sectionLinks.map(([key,label,Icon])=>{const done=isSectionComplete(form,key);return <a href={`#${key}`} key={key} className={done?"complete":""}><Icon size={16}/><span>{t(label)}</span>{done?<Check/>:<ChevronRight/>}</a>})}</aside>
       <form className="profile-form" onSubmit={e=>{e.preventDefault();save()}}>
         <FormSection id="profilePhoto" icon={UserRound} title="Profile photo" copy="A clear, professional portrait adds 10% to profile completion."><div className="photo-editor"><div className="photo-preview">{form.profilePhoto?<img src={form.profilePhoto} alt="Profile preview"/>:<span>{(form.firstName?.[0]||"M")+(form.lastName?.[0]||"A")}</span>}</div><div><label className="file-button">Upload or change photo<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>addPhoto(e.target.files?.[0])}/></label><p>JPG, PNG or WebP · Maximum 450 KB for local demo storage.</p>{form.profilePhoto&&<button type="button" className="remove-file" onClick={()=>{set("profilePhoto","");showToast("Profile photo removed — completion has been updated.")}}>Remove photo</button>}</div></div></FormSection>
         <div className="form-section panel" id="basic"><div className="form-section-head"><span><UserRound/></span><div><h2>Basic information</h2><p>The essentials schools see first.</p></div></div><div className="form-grid"><Field label="First name" value={form.firstName} onChange={v=>set("firstName",v)}/><Field label="Last name" value={form.lastName} onChange={v=>set("lastName",v)}/><Field label="Professional title" value={form.subject} onChange={v=>set("subject",v)}/><Field label="Current location" value={form.location} onChange={v=>set("location",v)}/></div></div>
@@ -52,11 +54,11 @@ export default function EditTeacherProfile() {
         <FormSection id="employment" icon={Briefcase} title="Employment status" copy="Your current professional situation."><ChoiceRow choices={["Currently employed","Seeking work","Available immediately"]} value={form.employment} onChange={v=>set("employment",v)}/></FormSection>
         <FormSection id="relocation" icon={MapPin} title="Relocation preference" copy="Tell schools where you are open to working."><ChoiceRow choices={["Open to relocate within Europe","Open worldwide","Remote only","Not open to relocate"]} value={form.relocation} onChange={v=>set("relocation",v)}/></FormSection>
         <FormSection id="workPermit" icon={FileText} title="Work-permit status" copy="This helps schools understand hiring requirements."><ChoiceRow choices={["EU citizen","Valid local permit","Sponsorship required"]} value={form.workPermit} onChange={v=>set("workPermit",v)}/></FormSection>
-        <div className="form-actions"><Link href="/teacher/profile" className="outline-button">Cancel</Link><button className="primary-button" type="submit"><Save/> Save profile</button></div>
+        <div className="form-actions"><Link href="/teacher/profile" className="outline-button">{t("Cancel")}</Link><button className="primary-button" type="submit"><Save/> {t("Save profile")}</button></div>
       </form>
     </div>
   </DashboardShell>;
 }
 
-function FormSection({id,icon:Icon,title,copy,children}:{id:string;icon:React.ComponentType<{size?:number}>;title:string;copy:string;children:React.ReactNode}) { return <section className="form-section panel" id={id}><div className="form-section-head"><span><Icon/></span><div><h2>{title}</h2><p>{copy}</p></div></div>{children}</section> }
-function ChoiceRow({choices,value,onChange}:{choices:string[];value:string;onChange:(v:string)=>void}) { return <div className="choice-row">{choices.map(choice=><button type="button" key={choice} className={value.includes(choice)||value===choice?"selected":""} onClick={()=>onChange(choice)}>{(value.includes(choice)||value===choice)&&<Check/>}{choice}</button>)}</div> }
+function FormSection({id,icon:Icon,title,copy,children}:{id:string;icon:React.ComponentType<{size?:number}>;title:string;copy:string;children:React.ReactNode}) { const {t}=useI18n();return <section className="form-section panel" id={id}><div className="form-section-head"><span><Icon/></span><div><h2>{t(title)}</h2><p>{t(copy)}</p></div></div>{children}</section> }
+function ChoiceRow({choices,value,onChange}:{choices:string[];value:string;onChange:(v:string)=>void}) { const {value:translateValue}=useI18n();return <div className="choice-row">{choices.map(choice=><button type="button" key={choice} className={value.includes(choice)||value===choice?"selected":""} onClick={()=>onChange(choice)}>{(value.includes(choice)||value===choice)&&<Check/>}{translateValue(choice)}</button>)}</div> }

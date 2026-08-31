@@ -2,6 +2,14 @@
 
 This is a living checklist. Mark an item complete only when it works in the repository, not when a visual placeholder merely exists.
 
+## Prototype — Localization
+
+- [x] Shared English/Turkish UI translation source
+- [x] Compact EN/TR switcher in school-side and teacher-side app headers
+- [x] Browser `localStorage` persistence with English as the default
+- [x] Static navigation, discovery, filters, profiles, dashboards, directories, forms, and prototype credit/request labels covered by the reusable localization layer
+- [ ] Production localization platform, locale-aware routes, and translated database/user-generated content
+
 ## Prototype — Teacher side
 
 - [x] Teacher dashboard

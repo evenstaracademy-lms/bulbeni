@@ -1,11 +1,17 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
 
 export function Brand({ compact = false }: { compact?: boolean }) {
   return (
     <Link href="/" className="brand" aria-label="BULBENI home">
-      <span className="brand-mark"><Sparkles size={compact ? 16 : 18} strokeWidth={2.4} /></span>
-      <span>BULBENI</span>
+      <Image
+        className="brand-logo"
+        src="/logo.png"
+        alt="BULBENI"
+        width={compact ? 145 : 160}
+        height={compact ? 109 : 120}
+        priority
+      />
     </Link>
   );
 }

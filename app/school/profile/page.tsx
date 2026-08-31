@@ -10,6 +10,7 @@ import { schoolNav } from "@/components/school-nav";
 import { useToast } from "@/components/toast";
 import { defaultSchoolProfile as defaults, SCHOOL_PROFILE_STORAGE as STORAGE, splitSchoolValues as split } from "@/components/school-profile-data";
 import { loadDemoSchoolProfile, saveDemoSchoolProfile } from "@/components/school-supabase-profile";
+import { useI18n } from "@/components/i18n";
 
 
 export default function EditSchoolProfile(){
@@ -36,7 +37,7 @@ export default function EditSchoolProfile(){
   </DashboardShell>
 }
 
-function FormCard({id,icon:Icon,title,copy,children}:{id:string;icon:React.ComponentType<{size?:number}>;title:string;copy:string;children:React.ReactNode}){return <section className="school-form-card" id={id}><header><span><Icon/></span><div><h2>{title}</h2><p>{copy}</p></div></header>{children}</section>}
-function Field({label,value,onChange,placeholder,wide,area}:{label:string;value:string;onChange:(v:string)=>void;placeholder?:string;wide?:boolean;area?:boolean}){return <label className={`school-field ${wide?"wide":""}`}><span>{label}</span>{area?<textarea value={value} placeholder={placeholder} onChange={e=>onChange(e.target.value)} rows={4}/>:<input value={value} placeholder={placeholder} onChange={e=>onChange(e.target.value)}/>}</label>}
-function Select({label,value,onChange,options}:{label:string;value:string;onChange:(v:string)=>void;options:string[]}){return <label className="school-field"><span>{label}</span><select value={value} onChange={e=>onChange(e.target.value)}>{options.map(x=><option key={x}>{x}</option>)}</select></label>}
-function Choice({label,options,value,onChange}:{label:string;options:string[];value:string;onChange:(v:string)=>void}){const selected=split(value);return <fieldset className="school-choice"><legend>{label}</legend><div>{options.map(x=><button type="button" key={x} className={selected.includes(x)?"selected":""} onClick={()=>onChange(selected.includes(x)?selected.filter(y=>y!==x).join("|"):[...selected,x].join("|"))}>{selected.includes(x)&&<Check/>}{x}</button>)}</div></fieldset>}
+function FormCard({id,icon:Icon,title,copy,children}:{id:string;icon:React.ComponentType<{size?:number}>;title:string;copy:string;children:React.ReactNode}){const {t}=useI18n();return <section className="school-form-card" id={id}><header><span><Icon/></span><div><h2>{t(title)}</h2><p>{t(copy)}</p></div></header>{children}</section>}
+function Field({label,value,onChange,placeholder,wide,area}:{label:string;value:string;onChange:(v:string)=>void;placeholder?:string;wide?:boolean;area?:boolean}){const {t}=useI18n();return <label className={`school-field ${wide?"wide":""}`}><span>{t(label)}</span>{area?<textarea value={value} placeholder={placeholder?t(placeholder):undefined} onChange={e=>onChange(e.target.value)} rows={4}/>:<input value={value} placeholder={placeholder?t(placeholder):undefined} onChange={e=>onChange(e.target.value)}/>}</label>}
+function Select({label,value,onChange,options}:{label:string;value:string;onChange:(v:string)=>void;options:string[]}){const {t,value:translateValue}=useI18n();return <label className="school-field"><span>{t(label)}</span><select value={value} onChange={e=>onChange(e.target.value)}>{options.map(x=><option key={x} value={x}>{translateValue(x)}</option>)}</select></label>}
+function Choice({label,options,value,onChange}:{label:string;options:string[];value:string;onChange:(v:string)=>void}){const {t,value:translateValue}=useI18n();const selected=split(value);return <fieldset className="school-choice"><legend>{t(label)}</legend><div>{options.map(x=><button type="button" key={x} className={selected.includes(x)?"selected":""} onClick={()=>onChange(selected.includes(x)?selected.filter(y=>y!==x).join("|"):[...selected,x].join("|"))}>{selected.includes(x)&&<Check/>}{translateValue(x)}</button>)}</div></fieldset>}

@@ -91,6 +91,8 @@ The current prototype:
 - Includes working Saved Teachers and Unlocked Contacts routes. Their ID state remains local/mock while teacher card data is loaded from Supabase.
 - Provides functional school-side teacher search plus basic and advanced filtering over the Supabase-loaded teacher dataset. Filters for schema-absent fields such as gender and profile completion remain disabled.
 - Ranks teacher recommendations with a transparent Phase 1 compatibility score derived from Marmara International College and teacher profile fields; no AI or external recommendation service is used.
+- Provides a lightweight English/Turkish interface switcher across the school and teacher workspaces. The preference is stored in browser `localStorage` and updates static interface labels immediately.
+- Localization is presentation-only: Supabase names, descriptions, certificates, education entries, and other user-entered content remain exactly as stored. No translation CMS, translated database fields, or production locale-routing system has been added.
 - Loads the selected demo school dashboard, profile editor, and public school profile from the Supabase `schools` table. The editor is wired to write supported fields back to the same demo row, but saving requires an update grant/policy for the current anonymous prototype role; fields absent from the current schema remain prototype-only.
 - Loads Nilaa Salarzaei as the selected teacher identity across the teacher header, dashboard, profile, and editor from the Supabase `teachers` table.
 - Includes a teacher-side Schools directory backed by live Supabase `schools` records.

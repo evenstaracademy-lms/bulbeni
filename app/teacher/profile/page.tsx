@@ -9,19 +9,21 @@ import { teacherNav } from "@/components/teacher-nav";
 import { ToastButton } from "@/components/toast-button";
 import { useTeacherProfile } from "@/components/teacher-profile-store";
 import { TeacherProfileGrid } from "@/components/teacher-profile-grid";
+import { useI18n } from "@/components/i18n";
 
 const Chip = ({ children }: { children: React.ReactNode }) => <span className="profile-chip">{children}</span>;
-const Section = ({ icon: Icon, title, children }: { icon: React.ComponentType<{ size?: number }>; title: string; children: React.ReactNode }) => <section className="profile-section panel"><div className="profile-section-title"><span><Icon size={19}/></span><h2>{title}</h2></div>{children}</section>;
+const Section = ({ icon: Icon, title, children }: { icon: React.ComponentType<{ size?: number }>; title: string; children: React.ReactNode }) => {const {t}=useI18n();return <section className="profile-section panel"><div className="profile-section-title"><span><Icon size={19}/></span><h2>{t(title)}</h2></div>{children}</section>};
 
 export default function TeacherProfile() {
   const {profile,completion,loadError}=useTeacherProfile(); const initials=(profile.firstName?.[0]||"N")+(profile.lastName?.[0]||"S");
+  const {t}=useI18n();
   return <DashboardShell nav={teacherNav} role="Teacher" initials={initials} hideBottomSettings>
     {loadError&&<div className="school-data-error">Unable to load Supabase profile: {loadError}</div>}
     <section className="profile-cover">
       <div className="cover-pattern"/><div className="profile-identity"><span className="profile-photo large">{profile.profilePhoto?<img src={profile.profilePhoto} alt={`${profile.firstName} ${profile.lastName}`}/>:<span className="demo-portrait"><i className="portrait-hair"/><i className="portrait-face"/><i className="portrait-neck"/><i className="portrait-jacket"/><i className="portrait-shirt"/></span>}</span><div className="identity-copy"><h1>{profile.firstName} {profile.lastName}</h1><div className="profile-role-line"><span><GraduationCap/> {profile.subject||"English Teacher"}</span><span><MapPin/> {profile.location?.split(",")[0]||"Ankara"}</span></div></div><div className="profile-complete-small"><strong>{completion}%</strong><span>Profile Complete</span></div></div>
       <div className="identity-chips"><Chip><Briefcase/> {profile.yearsExperience||"0"} years experience</Chip><Chip><Award/> {profile.certificates?.split(";")[0]||"Pending"}</Chip><Chip><Languages/> {profile.languages?.split(";")[0]||"Pending"}</Chip><Chip><UsersRound/> {profile.ages?.split("|").join(" · ")||"Pending"}</Chip></div>
       <Image className="profile-cover-art" src="/books-stack.png" width={190} height={145} alt="" />
-      <div className="profile-cover-actions"><Link href="/teacher/profile/edit" className="primary-button"><Pencil size={15}/> Edit Profile</Link><ToastButton className="outline-button" message="School preview mode opened."><Eye size={16}/> View as School</ToastButton></div>
+      <div className="profile-cover-actions"><Link href="/teacher/profile/edit" className="primary-button"><Pencil size={15}/> {t("Edit Profile")}</Link><ToastButton className="outline-button" message={t("School preview mode opened.")}><Eye size={16}/> {t("View as School")}</ToastButton></div>
     </section>
 
     <TeacherProfileGrid profile={profile}/>
